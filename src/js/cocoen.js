@@ -50,22 +50,25 @@ class Cocoen {
 
   onTap(e) {
     e.preventDefault();
-
-    this.leftPos = (e.pageX) ? e.pageX : e.touches[0].pageX;
+    
+    this.leftPos = e.pageX ? e.pageX : e.touches[0].pageX;
     this.requestDrag();
   }
 
   onDragStart(e) {
+    console.log('onDragStart')
     e.preventDefault();
-
-    const startX = (e.pageX) ? e.pageX : e.touches[0].pageX;
+    
+    const startX = e.pageX ? e.pageX : e.touches[0].pageX;
     const offsetLeft = this.dragElement.getBoundingClientRect().left + document.body.scrollLeft;
     this.posX = (offsetLeft + this.dragElementWidth) - startX;
     this.isDragging = true;
   }
 
   onDragEnd(e) {
+    console.log('onDragEnd')
     e.preventDefault();
+    
     this.isDragging = false;
   }
 
@@ -76,13 +79,14 @@ class Cocoen {
       return;
     }
 
-    this.moveX = (e.pageX) ? e.pageX : e.touches[0].pageX;
+    this.moveX = e.pageX ? e.pageX : e.touches[0].pageX; //The position of the mouse event in px from the left edge of the screen
     this.leftPos = (this.moveX + this.posX) - this.dragElementWidth;
 
     this.requestDrag();
   }
 
   drag() {
+    console.log('dragging')
     if (this.leftPos < this.minLeftPos) {
       this.leftPos = this.minLeftPos;
     } else if (this.leftPos > this.maxLeftPos) {
@@ -91,18 +95,19 @@ class Cocoen {
 
     let openRatio = (this.leftPos + (this.dragElementWidth / 2)) - this.elementOffsetLeft;
     openRatio /= this.elementWidth;
+    
     const width = `${openRatio * 100}%`;
 
-    this.dragElement.style.left = width;
+    this.dragElement.style.left = `calc(${width} - 3%)`;
     this.beforeElement.style.width = width;
-
+    
     if (this.options.dragCallback) {
       this.options.dragCallback(openRatio);
     }
   }
 
   requestDrag() {
-    window.requestAnimationFrame(this.drag.bind(this));
+    window.requestAnimationFrame(this.drag.bind(this));//requests animation frames to make the drag function being calculated become animated
   }
 }
 
